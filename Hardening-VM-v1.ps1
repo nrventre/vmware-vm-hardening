@@ -24,6 +24,8 @@ $dateStr = '{0:yyyyMMdd-HHmm}' -f $today
 
 New-Item $env:USERPROFILE\Documents\HardeningVM-Logs-$dateStr -ItemType directory
 
+Write-Host "Depending on the number of VMs, this take a while..."
+
 ###############################################
 #Persistent Disk Verify                       #
 ###############################################
@@ -361,3 +363,5 @@ ForEach($VM in $poweredoffvmsincluster) {
 
 } 
 Stop-Transcript
+
+Write-Host -f green "Folder '$env:USERPROFILE\Documents\HardeningVM-Logs-$dateStr' was generated with the logs inside"
