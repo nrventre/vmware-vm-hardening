@@ -149,17 +149,17 @@ $shareforcesalting = Get-VMhost | select Name, @{Name="Value";  Expression={Get-
 $shareforcesalting | Out-String | ForEach-Object { $_.Trim() } > "$env:USERPROFILE\Documents\HardeningVM-Logs-$dateStr\shareforcesalting.txt"
 
 #Generate file if config not match
-$emptycheck = (gc "$env:USERPROFILE\Documents\HardeningVM-Logs-$dateStr\shareforcesalting.txt") | where{$_ -like "*Mem.ShareForceSalting:2*"}
+$emptycheck = (gc "$env:USERPROFILE\Documents\HardeningVM-Logs-$dateStr\shareforcesalting.txt") | where{$_ -notlike "*Mem.ShareForceSalting:2*"}
 function shareforcesalting {
 if ($emptycheck -eq $Null) {
-Write-Host -f green "Share Force Salting is set to 1 in all Hosts"
+Write-Host -f green "Share Force Salting is set to 2 in all Hosts"
 }
 else {
 Write-Host -f red "Wrong Share Force Salting detected"
 Write-Host -f red "Fixing Hosts"
 $var1 = "" #Put your domain, for example if your hostname is host.test.local, put only test.local. If you don't use FQDN then comment this line and eliminate ".$var1" in next line.
-$esxhost = (gc "$env:USERPROFILE\Documents\HardeningVM-Logs-$dateStr\shareforcesalting.txt") | where{$_ -like "*Mem.ShareForceSalting:2*"} | foreach{$_.split(".")[0]}
-$esxhost | ForEach-Object {Get-VMhost "$_.$var1" | Get-AdvancedSetting -Name Mem.ShareForceSalting |  Set-AdvancedSetting –Value 1 -Confirm:$false}
+$esxhost = (gc "$env:USERPROFILE\Documents\HardeningVM-Logs-$dateStr\shareforcesalting.txt") | where{$_ -notlike "*Mem.ShareForceSalting:2*"} | foreach{$_.split(".")[0]}
+$esxhost | ForEach-Object {Get-VMhost "$_.$var1" | Get-AdvancedSetting -Name Mem.ShareForceSalting |  Set-AdvancedSetting –Value 2 -Confirm:$false}
 Write-Host -f green "Hosts Fixed"
 }
 }
